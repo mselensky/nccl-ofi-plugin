@@ -1,7 +1,8 @@
-# Source this script in your shifter container
-# to pull in NCCL with the OFI plugin
+# Source this script to pull in NCCL with the OFI plugin
 
-export NCCL_HOME=$(dirname "${BASH_SOURCE[0]}")/install
+export NCCL_HOME=$(realpath $(dirname "${BASH_SOURCE[0]}")/install)
+export NCCL_INCLUDE_DIRS=$NCCL_HOME/include
+export NCCL_LIBRARIES=$NCCL_HOME/lib
 export LD_LIBRARY_PATH=$NCCL_HOME/plugin/lib:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=$NCCL_HOME/plugin/deps/lib:$LD_LIBRARY_PATH
 

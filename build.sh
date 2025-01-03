@@ -1,32 +1,32 @@
 #!/bin/bash
-#SBATCH -C gpu
-#SBATCH -A nstaff
-#SBATCH -q debug
-#SBATCH --nodes=1
-#SBATCH --gpus-per-node=4
-#SBATCH --time=30
-#SBATCH -o slurm-build-%j.out
+#SBATCH -p debug
+#SBATCH -A hpcapps
+#SBATCH -t 00:15:00
+#SBATCH -N 1
+#SBATCH -n 32
+#SBATCH --mem-per-cpu=2G
+#SBATCH --gpus=1
+#SBATCH -o nccl-build-%j.out
 
 # This script will download, patch, build, and install NCCL and AWS-OFI-NCCL.
 # NCCL tests can then be built in a container or baremetal for testing.
 
 set -e
 
-module load PrgEnv-gnu
-module load cudatoolkit/12.2
-module unload craype-accel-nvidia80
+ml PrgEnv-nvhpc cuda/12.3
 
 export INSTALL_DIR=${INSTALL_DIR:-`pwd`/install}
 export PLUGIN_DIR=$INSTALL_DIR/plugin
 export NCCL_HOME=$INSTALL_DIR
-export LIBFABRIC_HOME=/opt/cray/libfabric/1.20.1
+export LIBFABRIC_HOME=/opt/cray/libfabric/1.15.2.0
 export GDRCOPY_HOME=/usr
 export MPI_HOME=$CRAY_MPICH_DIR
 
+# Kestrel uses H100s. Therefore, we need to target the compute_90/sm_90 NVCC_GENCODE
 export MPICH_GPU_SUPPORT_ENABLED=0
-export NVCC_GENCODE="-gencode=arch=compute_80,code=sm_80"
+export NVCC_GENCODE="-gencode=arch=compute_90,code=sm_90"
 
-export N=10
+export N=$SLURM_NTASKS
 export MPICC=CC
 export CC=gcc #cc
 export CXX=g++ #CC

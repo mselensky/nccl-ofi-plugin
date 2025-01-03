@@ -1,8 +1,8 @@
-/opt/cray/libfabric/1.20.1/lib64/libfabric.so*
-/opt/cray/xpmem/default/lib64/libxpmem.so*
+/opt/cray/libfabric/1.15.2.0/lib64/libfabric.so*
+/nopt/nrel/apps/gpu_stack/mpi/06-24/linux-rhel8-zen4/gcc-12.3.0/xpmem-master-bo6c54krwkcljrhqo3rzyotztoqdo6pk/lib/libxpmem.so*
 /usr/lib64/libcxi.so*
 /usr/lib64/libjson-c.so*
-/usr/lib64/libatomic.so.1
+/usr/lib64/libatomic.so*
 /usr/lib64/libldap_r-2.4.so*
 /usr/lib64/liblber-2.4.so*
 /usr/lib64/libsasl2.so*
