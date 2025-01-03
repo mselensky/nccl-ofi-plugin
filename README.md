@@ -48,4 +48,4 @@ cd pytorch/
 python setup.py install
 ```
 
-I am still working through some dependency-related errors here - this currently will not build, but I think I'm pretty close. Still need to choose an MPI and figure out how to get it to recognize the custom path to our NCCL plugin. 
+I am still working through some dependency-related errors here - this currently will not build, but I think I'm pretty close. Still need figure out how to get it to recognize the custom path to our NCCL plugin. 
