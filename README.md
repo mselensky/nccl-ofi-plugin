@@ -49,4 +49,18 @@ python setup.py install
 ```
 
 I am still working through some dependency-related errors here - this currently will not build due to the following error:
+```
+In file included from /nopt/cuda/12.3/extras/CUPTI/include/cupti.h:90,
+                 from /kfs2/projects/hpcapps/mselensk/nccl-slingshot-plugin/my-fork/nccl-ofi-plugin/pytorch/third_party/kineto/libkineto/src/CuptiActivityApi.h:20,
+                 from /kfs2/projects/hpcapps/mselensk/nccl-slingshot-plugin/my-fork/nccl-ofi-plugin/pytorch/third_party/kineto/libkineto/src/CuptiActivityApi.cpp:9:
+/nopt/cuda/12.3/extras/CUPTI/include/generated_cuda_runtime_api_meta.h:260:11: error: 'cudaGraphEdgeData' does not name a type; did you mean 'cudaGraphCreate'?
+  260 |     const cudaGraphEdgeData *dependencyData;
+      |           ^~~~~~~~~~~~~~~~~
+      |           cudaGraphCreate
 
+<... a bunch of stuff ...>
+
+gmake[2]: *** [third_party/kineto/libkineto/CMakeFiles/kineto_base.dir/build.make:79: third_party/kineto/libkineto/CMakeFiles/kineto_base.dir/src/CuptiActivityApi.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:5631: third_party/kineto/libkineto/CMakeFiles/kineto_base.dir/all] Error 2
+gmake[1]: *** Waiting for unfinished jobs....
+```
