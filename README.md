@@ -16,7 +16,7 @@ Run on H100s with
 
 Load system modules.
 ```
-ml PrgEnv-nvhpc blas cudnn/9.2.0.82-12 cuda/12.3 mamba
+ml PrgEnv-nvhpc cudnn/9.2.0.82-12 cuda/12.3 mamba
 ```
 
 Create mamba env where PyTorch (and a GCC newer than 9.3, but older than GCC 12) will live. We are also installing mkl and blas from conda to avoid the use of Intel modules on Kestrel (because the CPU hardware on the GPUs are AMD, not Intel). Despite the use of mamba, we will still build it from scratch to include our NCCL library. 
