@@ -1,0 +1,13 @@
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - gcc=10
+  - pyyaml
+  - cmake
+  - gxx=10
+  - mkl
+  - blas[build=*mkl]
+  - numpy
+  - typing-extensions
+  - numactl-devel-cos7-x86_64

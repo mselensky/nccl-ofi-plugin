@@ -19,10 +19,10 @@ Load system modules.
 ml PrgEnv-nvhpc cudnn/9.2.0.82-12 cuda/12.3 mamba
 ```
 
-Create mamba env where PyTorch (and a GCC newer than 9.3, but older than GCC 12) will live. We are also installing mkl and blas from conda to avoid the use of Intel modules on Kestrel (because the CPU hardware on the GPUs are AMD, not Intel). Despite the use of mamba, we will still build it from scratch to include our NCCL library. 
+Create mamba env where PyTorch (and a GCC newer than 9.3, but older than GCC 12) will live. We are also installing mkl and blas from conda to avoid the use of Intel modules on Kestrel (because the CPU hardware on the GPUs are AMD, not Intel), as well as a few other dependencies. Despite the use of mamba, we will still build PyTorch from scratch to include our NCCL library. 
 ```
-mamba create --prefix=`pwd`/pytorch-with-nccl-env python=3.11 numpy pyyaml gxx=10 gcc=10 mkl blas=*=*mkl -y
-conda activate `pwd`/pytorch-with-nccl-env 
+mamba env create -f environment.yaml --prefix=`pwd`/pytorch-with-nccl-env
+conda activate ./pytorch-with-nccl-env 
 ```
 
 Set build variables for PyTorch.
@@ -48,4 +48,5 @@ cd pytorch/
 python setup.py install
 ```
 
-I am still working through some dependency-related errors here - this currently will not build, but I think I'm pretty close. Still need figure out how to get it to recognize the custom path to our NCCL plugin. 
+I am still working through some dependency-related errors here - this currently will not build due to the following error:
+
