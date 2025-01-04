@@ -14,12 +14,12 @@ Run on H100s with
 
 # Building PyTorch with custom NCCL-ofi plugin on Kestrel
 
-Load system modules.
+Load system modules for mamba and Cray MPICH.
 ```
-ml PrgEnv-nvhpc cudnn/9.2.0.82-12 cuda/12.3 mamba
+ml mamba cray-mpich
 ```
 
-Create mamba env where PyTorch (and a GCC newer than 9.3, but older than GCC 12) will live. We are also installing mkl and blas from conda to avoid the use of Intel modules on Kestrel (because the CPU hardware on the GPUs are AMD, not Intel), as well as a few other dependencies. Despite the use of mamba, we will still build PyTorch from scratch to include our NCCL library. 
+Create mamba env where PyTorch (and a GCC newer than 9.3, but older than GCC 12) will live. We are also installing mkl and blas from conda to avoid the use of Intel modules on Kestrel (because the CPU hardware on the GPUs are AMD, not Intel), as well as a few other dependencies (including cuda, cudatoolkit, and cudnn). Despite the use of mamba, we will still build PyTorch from scratch to include our NCCL library. 
 ```
 mamba env create -f environment.yaml --prefix=`pwd`/pytorch-with-nccl-env
 conda activate ./pytorch-with-nccl-env 
@@ -31,6 +31,9 @@ export CC=gcc
 export CXX=g++
 export MPICH_GPU_SUPPORT_ENABLED=0
 export USE_CUDA=1
+export CUDA_HOME=$CONDA_PREFIX
+export CUDA_INCLUDE_DIRS=$CUDA_HOME/include
+export USE_MPI=1
 export USE_DISTRIBUTED=1
 export TORCH_CUDA_ARCH_LIST=9.0
 export USE_SYSTEM_NCCL=1
@@ -48,19 +51,13 @@ cd pytorch/
 python setup.py install
 ```
 
-I am still working through some dependency-related errors here - this currently will not build due to the following error:
+I am somehow missing CUDA (even though its version is detected...), probably a missing variable or something. CUDA is installed into the conda environment and seems to be found by other dependencies, but Caffe2 is causing the entire build to be CPU-only:
+ 
 ```
-In file included from /nopt/cuda/12.3/extras/CUPTI/include/cupti.h:90,
-                 from /kfs2/projects/hpcapps/mselensk/nccl-slingshot-plugin/my-fork/nccl-ofi-plugin/pytorch/third_party/kineto/libkineto/src/CuptiActivityApi.h:20,
-                 from /kfs2/projects/hpcapps/mselensk/nccl-slingshot-plugin/my-fork/nccl-ofi-plugin/pytorch/third_party/kineto/libkineto/src/CuptiActivityApi.cpp:9:
-/nopt/cuda/12.3/extras/CUPTI/include/generated_cuda_runtime_api_meta.h:260:11: error: 'cudaGraphEdgeData' does not name a type; did you mean 'cudaGraphCreate'?
-  260 |     const cudaGraphEdgeData *dependencyData;
-      |           ^~~~~~~~~~~~~~~~~
-      |           cudaGraphCreate
+-- Could NOT find CUDA (missing: CUDA_INCLUDE_DIRS) (found version "12.4")
+CMake Warning at cmake/public/cuda.cmake:31 (message):
+  Caffe2: CUDA cannot be found.  Depending on whether you are building Caffe2
+  or a Caffe2 dependent library, the next warning / error will give you more
+  info.
 
-<... a bunch of stuff ...>
-
-gmake[2]: *** [third_party/kineto/libkineto/CMakeFiles/kineto_base.dir/build.make:79: third_party/kineto/libkineto/CMakeFiles/kineto_base.dir/src/CuptiActivityApi.cpp.o] Error 1
-gmake[1]: *** [CMakeFiles/Makefile2:5631: third_party/kineto/libkineto/CMakeFiles/kineto_base.dir/all] Error 2
-gmake[1]: *** Waiting for unfinished jobs....
 ```

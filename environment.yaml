@@ -11,3 +11,7 @@ dependencies:
   - numpy
   - typing-extensions
   - numactl-devel-cos7-x86_64
+  - conda-forge::cuda-version=12.4
+  - conda-forge::cudnn
+  - nvidia/label/cuda-12.4.0::cuda
+  - nvidia/label/cuda-12.4.0::cuda-toolkit
